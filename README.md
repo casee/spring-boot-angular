@@ -228,4 +228,4 @@ And modify our frontend components.
 With each modification node will recompile our frontend and we will see changes in browser immediately. 
 
 Once the application has started, we can see the main page with navbar and footer.  
-Angular Demo page is available on **Demo** navbar item.
+Angular Demo page is available under **Demo** navbar item.
