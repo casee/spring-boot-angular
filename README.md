@@ -1,4 +1,8 @@
 # spring-boot-angular
+Cloned and upgraded from  
+[UTILIZING MAVEN FRONT-END PLUGIN FOR ANGULAR & SPRING BOOT](https://frakton.com/utilizing-maven-front-end-plugin-for-angular-spring-boot/)  
+[FraktonDevelopers/spring-boot-angular-maven-build](https://github.com/FraktonDevelopers/spring-boot-angular-maven-build)
+
 
 ## Architecture Overview / Prerequisites
 
