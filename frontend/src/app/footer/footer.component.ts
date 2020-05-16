@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-footer',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  version: string = "2020.05.16-ga-1";
+  version: string;
 
-  constructor() { }
+  constructor(private http: HttpClient) {
+      this.http.get("api/version", {responseType: 'text'}).subscribe(data => {
+          this.version = data;
+      });
+  }
 
   ngOnInit(): void {
   }

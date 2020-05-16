@@ -1,4 +1,4 @@
-# spring-boot-angular-maven-build
+# spring-boot-angular
 
 ## Architecture Overview / Prerequisites
 
@@ -46,13 +46,8 @@ In the **backend** module we implement the parent section
 </parent>
 
 <artifactId>backend</artifactId>
-<version>0.0.1-SNAPSHOT</version>
 ```
-Next, we implement the Maven Resources Plugin. This plugin is used to execute our
-generated **frontend** module. In the output directory section we select the 
-project build directory and the resources from our **dist/frakton** generated folder. 
-In the snippet below we have added also some plugins such as:
-
+Next, we add some useful plugins:
 * maven-failsafe-plugin - is used and designed for integration tests
 * maven-surefire-plugin - is used to run unit tests
 * spring-boot-maven-plugin - This plugin provides several usages allowing us to package executable JAR or WAR archives and run the application.
@@ -60,24 +55,6 @@ In the snippet below we have added also some plugins such as:
 ```
 <build>
    <plugins>
-       <plugin>
-           <artifactId>maven-resources-plugin</artifactId>
-           <executions>
-               <execution>
-                   <id>copy-resources</id>
-                   <phase>validate</phase>
-                   <goals><goal>copy-resources</goal></goals>
-                   <configuration>
-                       <outputDirectory>${project.build.directory}/classes/resources/</outputDirectory>
-                       <resources>
-                           <resource>
-                               <directory>${project.parent.basedir}/frontend/dist/frakton/</directory>
-                           </resource>
-                       </resources>
-                   </configuration>
-               </execution>
-           </executions>
-       </plugin>
        <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-failsafe-plugin</artifactId>
@@ -94,9 +71,8 @@ In the snippet below we have added also some plugins such as:
 </build>
 ```
 
-After implementing the plugins section, we need to include the **frontend** 
-dependency. This will make sure the **frontend** is included in the final
-executable JAR.
+After implementing the plugins section, we need to include the **frontend** dependency.    
+Our **backend** module will use **frontend** html resources.
 
 ```
 <dependencies>
@@ -122,24 +98,28 @@ Next, we need to implement the pom.xml in **frontend** by adding the parent sect
 </parent>
 
 <artifactId>frontend</artifactId>
-<version>0.0.1-SNAPSHOT</version>
 ```
 
 To execute some of npm commands we need the **frontend-maven-plugin**.
-This plugin comes with a set of built-in commands which we can use for
-triggering npm commands
+This plugin comes with a set of built-in commands which we can use for triggering npm commands.
 
 ``` 
+<properties>
+    <frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
+    <node.version>v12.16.3</node.version>
+    <npm.version>6.14.4</npm.version>
+</properties>
+
 <build>
 <plugins>
    <plugin>
        <groupId>com.github.eirslett</groupId>
        <artifactId>frontend-maven-plugin</artifactId>
-       <version>1.7.6</version>
+       <version>${frontend-maven-plugin.version}</version>
        <configuration>
            <workingDirectory>./</workingDirectory>
-           <nodeVersion>v10.16.0</nodeVersion>
-           <npmVersion>6.10.2</npmVersion>
+           <nodeVersion>${node.version}</nodeVersion>
+           <npmVersion>${npm.version}</npmVersion>
        </configuration>
        <executions>
            <execution>
@@ -169,19 +149,20 @@ triggering npm commands
 </build>
 ```
 
-In the configuration tag, we implement the working directory and we select 
-the Node and Npm versions.
+In the configuration tag, we specify the working directory, and we select the Node and Npm versions.
 
-Also, in the build section we need to define the resources by specifying the 
-directory. The **dist/frakton** folder is used to be placed inside the build output.
-
-```
-<resources>
-   <resource>
-       <directory>./dist/frakton</directory>
-       <targetPath>static</targetPath>
-   </resource>
-</resources>
+We need to define output directory in angular.json
+```json
+{
+  ...
+  "projects": {
+    "frakton": {
+      ...
+      "architect": {
+        "build": {
+          ...
+          "options": {
+            "outputPath": "target/classes/static",
 ```
 
 ## Testing back-end and front-end
@@ -199,12 +180,13 @@ Next. we can start our Angular project using:
 If everything seems to work correctly we can build the project using:
 **mvn clean install**
 
-*Make sure you are executing the command in the spring-boot-angular-maven-build parent module*
+*Make sure you are executing the command in the spring-boot-angular parent module*
 
-After building the application, in the backend is generated the target/
-folder which contains the jar: backend-0.0.1-SNAPSHOT.jar 
-And in the **frontend** is generated the dist/ folder and node_modules.
-If you want to run the executable JAR, open terminal and add:
+After building the application two jars generated:
+ * backend-0.0.1-SNAPSHOT.jar
+ * frontend-0.0.1-SNAPSHOT.jar
+
+If you want to run the executable JAR, open terminal and run:
 
 java -jar backend-0.0.1-SNAPSHOT.jar
 
