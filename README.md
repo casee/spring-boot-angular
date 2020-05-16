@@ -197,6 +197,46 @@ If you want to run the executable JAR, open terminal and run:
 
 java -jar backend-0.0.1-SNAPSHOT.jar
 
+## Allow Angular to handle routes
+
+After running the JAR file, when accessing addresses like https://localhost:8080/demo directly  
+we will have a Whitelabel Error Page.
+
+This happens because Angular by default all paths are supported and accessible
+but Spring Boot tries to manage paths by itself. 
+To fix this, we need to add some configurations. Create a package **config/**
+and create **WebConfig.java**. This class has to implement **WebMvcConfigurer** and 
+to use **ResourceHandlers**.
+
+```java
+@Component
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                        Resource requestedResource = location.createRelative(resourcePath);
+                        return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
+                                : new ClassPathResource("/static/index.html");
+                    }
+                });
+    }
+
+}
+```
+We need to mark the class with @Component annotation. Spring will instantiate the class at runtime.
+ 
+The /** pattern is matched by **AntPathMatcher** to directories in the path,
+so the configuration will be applied to our project routes. 
+Also the **PathResourceResolver** will try to find any resource under the
+location given, so all the requests that are not handled by Spring Boot 
+will be redirected to *static/index.html* giving access to Angular to manage them.
+
 ## Add proxy.config.json to develop frontend separately
 
 To develop **frontend** independently we will add **proxy.conf.json**

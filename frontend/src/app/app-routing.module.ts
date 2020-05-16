@@ -9,7 +9,9 @@ const routes: Routes = [
     {path: 'demo', component: AngularDemoComponent},
     {path: 'about', component: AboutComponent},
     {path: 'action', component: ActionPageComponent},
-    {path: 'another-action', component: AnotherActionPageComponent}
+    {path: 'another-action', component: AnotherActionPageComponent},
+    {path: '', redirectTo: '/demo', pathMatch: 'full'},
+    {path: '**', redirectTo: '/demo', pathMatch: 'full'}
 ];
 
 @NgModule({
