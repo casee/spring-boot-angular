@@ -13,6 +13,10 @@
     <artifactId>backend</artifactId>
 
     <properties>
+        <lombok.version>1.18.6</lombok.version>
+        <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.29</slf4j.version>
+
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     </properties>
 
@@ -23,9 +27,26 @@
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>

@@ -1,0 +1,16 @@
+<configuration>
+
+    <property name="app.instance.id" value="1" />
+    <property name="log.prefix" value="[FRK-${app.instance.id}]" />
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.prefix} %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="stdout" />
+    </root>
+
+</configuration>
