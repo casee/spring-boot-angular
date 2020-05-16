@@ -26,7 +26,7 @@ specified modules.
 
 Then, we need to create the modules using Maven Build Tool. We add the modules in the main **pom.xml**
 
-```
+```xml
 <modules>
    <module>backend</module>
    <module>frontend</module>
@@ -34,7 +34,7 @@ Then, we need to create the modules using Maven Build Tool. We add the modules i
 ```
 Also here we have to specify, the packaging to serve as a container for our sub-modules
 
-```
+```xml
 <packaging>pom</packaging>
 ```
 
@@ -42,7 +42,7 @@ Also here we have to specify, the packaging to serve as a container for our sub-
 
 In the **backend** module we implement the parent section
 
-```
+```xml
 <parent>
    <groupId>com</groupId>
    <artifactId>frakton</artifactId>
@@ -56,7 +56,7 @@ Next, we add some useful plugins:
 * maven-surefire-plugin - is used to run unit tests
 * spring-boot-maven-plugin - This plugin provides several usages allowing us to package executable JAR or WAR archives and run the application.
 
-```
+```xml
 <build>
    <plugins>
        <plugin>
@@ -78,7 +78,7 @@ Next, we add some useful plugins:
 After implementing the plugins section, we need to include the **frontend** dependency.    
 Our **backend** module will use **frontend** html resources.
 
-```
+```xml
 <dependencies>
    <dependency>
        <groupId>com</groupId>
@@ -94,7 +94,7 @@ Our **backend** module will use **frontend** html resources.
 
 Next, we need to implement the pom.xml in **frontend** by adding the parent section:
 
-```
+```xml
 <parent>
    <groupId>com</groupId>
    <artifactId>frakton</artifactId>
@@ -107,7 +107,7 @@ Next, we need to implement the pom.xml in **frontend** by adding the parent sect
 To execute some of npm commands we need the **frontend-maven-plugin**.
 This plugin comes with a set of built-in commands which we can use for triggering npm commands.
 
-``` 
+```xml 
 <properties>
     <frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
     <node.version>v12.16.3</node.version>
@@ -115,41 +115,41 @@ This plugin comes with a set of built-in commands which we can use for triggerin
 </properties>
 
 <build>
-<plugins>
-   <plugin>
-       <groupId>com.github.eirslett</groupId>
-       <artifactId>frontend-maven-plugin</artifactId>
-       <version>${frontend-maven-plugin.version}</version>
-       <configuration>
-           <workingDirectory>./</workingDirectory>
-           <nodeVersion>${node.version}</nodeVersion>
-           <npmVersion>${npm.version}</npmVersion>
-       </configuration>
-       <executions>
-           <execution>
-               <id>install node and npm</id>
-               <goals>
-                   <goal>install-node-and-npm</goal>
-               </goals>
-           </execution>
-           <execution>
-               <id>npm install</id>
-               <goals>
-                   <goal>npm</goal>
-               </goals>
-           </execution>
-           <execution>
-               <id>npm run build</id>
-               <goals>
-                   <goal>npm</goal>
-               </goals>
-               <configuration>
-                   <arguments>run build</arguments>
-               </configuration>
-           </execution>
-       </executions>
-   </plugin>
-</plugins>
+    <plugins>
+        <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>${frontend-maven-plugin.version}</version>
+            <configuration>
+                <workingDirectory>./</workingDirectory>
+                <nodeVersion>${node.version}</nodeVersion>
+                <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>install node and npm</id>
+                    <goals>
+                        <goal>install-node-and-npm</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>npm install</id>
+                    <goals>
+                        <goal>npm</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>npm run build</id>
+                    <goals>
+                        <goal>npm</goal>
+                    </goals>
+                    <configuration>
+                        <arguments>run build</arguments>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
 </build>
 ```
 
@@ -158,15 +158,18 @@ In the configuration tag, we specify the working directory, and we select the No
 We need to define output directory in angular.json
 ```json
 {
-  ...
   "projects": {
     "frakton": {
-      ...
       "architect": {
         "build": {
-          ...
           "options": {
-            "outputPath": "target/classes/static",
+            "outputPath": "target/classes/static"
+          }
+        }
+      }
+    }
+  }
+}
 ```
 
 ## Testing back-end and front-end
@@ -194,41 +197,35 @@ If you want to run the executable JAR, open terminal and run:
 
 java -jar backend-0.0.1-SNAPSHOT.jar
 
-## Allow Angular to handle routes
+## Add proxy.config.json to develop frontend separately
 
-After running the JAR file, when accessing https://localhost:8080
-we will have a Whitelabel Error Page.
+To develop **frontend** independently we will add **proxy.conf.json**
+```json
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false
+  }
+}
+```
+This config says that all requests from our **frontend** which start with "/api"
+will be redirected to our backend.
 
-This happens because Angular by default all paths are supported and accessible
-but with the usage of Maven, Spring Boot tries to manage paths by itself. 
-To fix this, we need to add some configurations. Create a package **config/**
-and create **WebConfig.java**. This class has to implement **WebMvcConfigurer** and 
-to use **ResourceHandlers**.
-
-``` 
-@Override
-public void addResourceHandlers(ResourceHandlerRegistry registry) {
-  
-   registry.addResourceHandler("/**")
-           .addResourceLocations("classpath:/static/")
-           .resourceChain(true)
-           .addResolver(new PathResourceResolver() {
-               @Override
-               protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                   Resource requestedResource = location.createRelative(resourcePath);
-                   return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
-                           : new ClassPathResource("/static/index.html");
-               }
-           });
+Also we should update our **start** script in **package.json** 
+```json
+{
+  "scripts": {
+    "start": "ng serve --proxy-config proxy.conf.json",
+  }
 }
 ```
 
-The /** pattern is matched by **AntPathMatcher** to directories in the path,
-so the configuration will be applied to our project routes. 
-Also the **PathResourceResolver** will try to find any resource under the
-location given, so all the requests that are not handled by Spring Boot 
-will be redirected to *static/index.html* giving access to Angular to manage them.
+Now we can just run our backend like this
+```shell script
+npm start
+```
+And modify our frontend components.  
+With each modification node will recompile our frontend and we will see changes in browser immediately. 
 
-Next, we just build our project and generate the JAR file.
-
-Once the application has started, we will be able to see the welcome page.
+Once the application has started, we can see the main page with navbar and footer.
+Angular Demo page is available on **Demo** navbar item.
