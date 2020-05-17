@@ -171,6 +171,7 @@ We need to define output directory in angular.json
   }
 }
 ```
+Spring bu default will look for html resources in classpath:/static/ directory
 
 ## Testing back-end and front-end
 

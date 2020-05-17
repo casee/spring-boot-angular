@@ -11,7 +11,7 @@ export class FooterComponent implements OnInit {
   version: string;
 
   constructor(private http: HttpClient) {
-      this.http.get("api/version", {responseType: 'text'}).subscribe(data => {
+      this.http.get("frakton/api/version", {responseType: 'text'}).subscribe(data => {
           this.version = data;
       });
   }

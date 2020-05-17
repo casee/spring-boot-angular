@@ -22,6 +22,8 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "deployUrl": "/frakton/",
+            "baseHref": "/frakton/",
             "aot": false,
             "assets": [
               "src/favicon.ico",
