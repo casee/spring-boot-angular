@@ -3,6 +3,10 @@ Cloned and upgraded from
 [UTILIZING MAVEN FRONT-END PLUGIN FOR ANGULAR & SPRING BOOT](https://frakton.com/utilizing-maven-front-end-plugin-for-angular-spring-boot/)  
 [FraktonDevelopers/spring-boot-angular-maven-build](https://github.com/FraktonDevelopers/spring-boot-angular-maven-build)
 
+## Useful links
+[Building a Simple Angular 7 App with Bootstrap 4 Styling](https://codeburst.io/getting-started-with-angular-7-and-bootstrap-4-styling-6011b206080)  
+[Angular Router: A Complete Example (build a Bootstrap Navigation Menu)](https://blog.angular-university.io/angular-2-router-nested-routes-and-nested-auxiliary-routes-build-a-menu-navigation-system/)
+
 
 ## Architecture Overview / Prerequisites
 
