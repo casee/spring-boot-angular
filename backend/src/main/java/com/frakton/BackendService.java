@@ -11,9 +11,9 @@ public class BackendService {
 
     @RequestMapping("version")
     public String getVersion() {
-        Package objPackage = this.getClass().getPackage();
-        String name = objPackage.getImplementationTitle();
-        String version = objPackage.getImplementationVersion();
+        final Package objPackage = this.getClass().getPackage();
+        final String name = objPackage.getImplementationTitle();
+        final String version = objPackage.getImplementationVersion();
         log.info("Package name: {}", name);
         log.info("Package version: {}", version);
 
